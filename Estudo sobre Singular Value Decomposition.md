@@ -5,11 +5,17 @@
 * Disclaimer (colocar algum aviso em português): na notação BT, o "T" significa que a dada matriz é a transposta.
 Por exemplo, FT é a matriz transposta da matriz F.
 
-### Dada (ou dado) uma matriz A, a decomposição SVD entrega, ao final de seu processo, três matrizes, U, S e VT, de forma que A = U * S * VT.
-> Como é feita a decomposição da matriz A:  
-    1. É computada uma matriz A\*AT e são calculados os autovetores dessa matriz. Tais autovetores formarão as colunas da matriz U.  
-    2. De modo análogo, é computada uma matriz AT\*A e seus autovetores formam as linhas da matriz VT.  
-    3. Finalmente, a matriz S é formada pelos autovalores de AT\*A.  
+### Dada (ou dado) uma matriz M, a decomposição SVD entrega, ao final de seu processo, três matrizes, U, Σ e VT, de forma que M = U * Σ * VT.
+> Como é feita a decomposição da matriz M:  
+    1. É computada uma matriz M\*MT e são calculados os autovetores dessa matriz. Tais autovetores formarão as colunas da matriz U.  
+    2. De modo análogo, é computada uma matriz MT\*M e seus autovetores formam as linhas da matriz VT.  
+    3. Finalmente, a matriz Σ é formada pelos autovalores de MT\*M.  
+
+* Ilustrações das transformações que cada matriz produzida na fatoração:
+    * Procedimento sumarizado:  
+    !["SVD transformations"](images/1200px-Singular-Value-Decomposition.svg.png)  
+    * Animação com as transformações:  
+    !["SVD gif"](images/Singular_value_decomposition.gif)
 
 #### Algoritmo para decomposição SVD em Python puro
 ```python
@@ -46,7 +52,6 @@ reformatar esse informações
     1. U, matriz quadrada, m x m
     2. S (ou Sigma), matriz diagonal, m x n
     3. VT, matriz quadrada, n x n  
-
 
 !["SVD illustration"](images/svd_matrices.png)
 
@@ -98,6 +103,21 @@ U, S, VT = np.linalg.svd(matrix, full_matrices=False)
 
 ### PARA CUSTO COMPUTACIONAL: APLICAR EM DIVERSAS MATRIZES DE ORDEM CRESCENTE COM ENTRADAS REAIS ALEATÓRIAS
 
-* O custo computacional está, principalmente, em calcular dois conjuntos de autovetores e um conjunto de autovalores. 
+### Custo computacional
+* No algoritmo para a decomposição SVD de uma matriz A, o custo computacional está em:
+    1. Armazenar A, AT, U, Σ e VT em memória;
+    2. Calcular dois produtos de matrizes, M\*MT e MT\*M;
+        * O produto entre as matrizes, em uma de suas melhores implementações, utilizará o algoritmo de Strassen, que otimiza 
+        velocidade em troca de espaço na memória. Uma multiplicação comum entre matrizes leva Θ(n³) operações para ser realizada, 
+        enquanto Strassen exige, no pior caso, O(n^2.80).  
+    3. E, principalmente, em encontrar dois conjuntos de autovetores e um conjunto de autovalores.  
+        * Para este processo, recomenda-se o algoritmo QR com reflexões de Householder, que exige O(9n³) operações. 
+        Para efeito de comparações, a versão sem as reflexões demanda O(n⁴) flop.  
+        
+### Exemplo de aplicação do SVD: compressão de imagens  
 
-* Comentar sobre processos para encontrar autovalores e autovetores: algoritmo QR com otimização por Householder
+```python
+
+```
+
+##### Processo de compressão da imagem, variando 
