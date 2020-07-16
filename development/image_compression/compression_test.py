@@ -32,7 +32,7 @@ S1 = np.diag(S1)
 S2 = np.diag(S2)
 
 for precision in range(5, 200, 20):
-    # Construct approximate image, one time for each color (RGB)
+
     red_approximation = U0[:, :precision] @ S0[0:precision, :precision] @ VT0[:precision, :]
     green_approximation = U1[:, :precision] @ S1[0:precision, :precision] @ VT1[:precision, :]
     blue_approximation = U2[:, :precision] @ S2[0:precision, :precision] @ VT2[:precision, :]

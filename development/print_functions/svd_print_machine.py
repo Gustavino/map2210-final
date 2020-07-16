@@ -23,7 +23,7 @@ def __svd_printer__(matrix, is_optimized):
 
     if is_optimized:
         print("Original matrix: \n {}".format(U @ Sigma @ VT))
-    else:
-        print("Original matrix: \n {}".format(U @ np.diag(S) @ VT))
+        return
+    print("Original matrix: \n {}".format(U @ np.diag(S) @ VT))
 
 

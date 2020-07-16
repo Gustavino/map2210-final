@@ -2,10 +2,10 @@
 ## Descrição e aplicação
 
 
-* Esclarecimento sobre notação: na notação BT, o "T" significa que a dada matriz é a transposta.
+* Esclarecimento sobre notação: na notação BT, o "T" significa que a matriz em questão é a transposta.
 Por exemplo, FT é a matriz transposta da matriz F.
 
-### Dada (ou dado) uma matriz M, a decomposição SVD entrega, ao final de seu processo, três matrizes, U, Σ e VT, de forma que M = U * Σ * VT.
+### Dada uma matriz M, a decomposição SVD entrega, ao final de seu processo, três matrizes, U, Σ e VT, de forma que M = U * Σ * VT.
 > Como é feita a decomposição da matriz M:  
     1. É computada uma matriz M\*MT e são calculados os autovetores dessa matriz. Tais autovetores formarão as colunas da matriz U.  
     2. De modo análogo, é computada uma matriz MT\*M e seus autovetores formam as linhas da matriz VT.  
@@ -17,7 +17,8 @@ Por exemplo, FT é a matriz transposta da matriz F.
     * Animação com as transformações:  
     !["SVD gif"](images/Singular_value_decomposition.gif)
 
-#### Algoritmo para decomposição SVD em Python puro
+#### Algoritmo para decomposição SVD em Python puro  
+* O operador "@" significa multiplicação entre matrizes.
 ```python
 import numpy as np
 
@@ -43,27 +44,25 @@ VT = np.transpose(mtm_eigvectors)
 ```  
 
 
-#### Cálculo do SVD através do numpy
+#### Cálculo do SVD através do numpy  
+* Valores singulares: um valor singular referente a um autovetor é a *raiz quadrada do autovalor* pertencente 
+a esse mesmo autovetor.
 
-reformatar esse informações
-* INFORMAÇÕES: um valor singular referente a um autovetor é a raiz quadrada do autovalor pertencente a esse mesmo autovetor
-
-* Em uma matriz A, m x n, não-quadrada, a decomposição resulta nas seguintes três matrizes:
+* Em uma matriz A, m x n, não-quadrada, a decomposição resulta nas seguintes três matrizes:  
     1. U, matriz quadrada, m x m
     2. S (ou Sigma), matriz diagonal, m x n
     3. VT, matriz quadrada, n x n  
-
-!["SVD illustration"](images/svd_matrices.png)
+    !["SVD illustration"](images/svd_matrices.png)
 
 * S, que tem a mesma forma de A, é uma matriz diagonal com os valores singulares de A contidos em sua diagonal principal. 
-Portanto, fica evidente que S terá *n* valores singulares e *m-n* linhas de zeros após o último valor singular (ou seja, a partir da linha n+1). 
+Portanto, fica evidente que S terá *n* valores singulares e (*m-n*) linhas de zeros após o último valor singular (ou seja, a partir da linha n+1). 
 Assim, as últimas *m-n* colunas de U não afetam o cálculo do produto _U * S_. Dessa forma, existem duas maneiras de calcular a decomposição: 
 uma que utiliza as matrizes inteiras e outra que otimiza o cálculo, tirando cômputos desnecessários.
 
 * Na imagem abaixo, o cálculo é otimizado a fim de aproveitar-se somente das primeiras *p* linhas de _S_ e *p* colunas de _U_:  
 
-    !["Optimized SVD"](images/svd_optimized_matrices.jpg)
-
+    !["Optimized SVD"](images/svd_optimized_matrices.jpg)  
+  
 #### Cálculos empregando funções do numpy
 
 ##### Matriz cheia
@@ -97,7 +96,7 @@ U, S, VT = np.linalg.svd(matrix, full_matrices=False)
 
 * Em ambos os casos, o resultado é o mesmo:
 
-```python 
+```python  
 U:
  [[-0.08476661 -0.71876571]
  [-0.19556039 -0.50694598]
@@ -127,14 +126,12 @@ Original matrix:
  [11. 12.]]
 ```  
 
-#### Cálculo do SVD utilizando a biblioteca sklearn
+#### Cálculo do SVD utilizando a biblioteca sklearn  
 
 A função *sklearn.decomposition.TruncatedSVD(n_components=desired_precision)* retorna um estimador que deve ser treinado e, assim, poderá ser manipulado para reduzir a dimensão dos dados de uma matriz qualquer
  (ou seja, aplicar SVD na matriz, retornando as matrizes com tamanho em função de "n_components").  
 A biblioteca sklearn tem desempenho notavelmente mais rápido que as funções da biblioteca numpy (esta que deve ser operada somente por utilidade, em demonstrações simples de procedimentos).  
 Todavia, ambas aproveitam-se de implementações dos procedimentos em FORTRAN, onde um dos métodos do sklearn serve-se de algoritmos pseudoaleatórios.  
-
-### PARA CUSTO COMPUTACIONAL: APLICAR EM DIVERSAS MATRIZES DE ORDEM CRESCENTE COM ENTRADAS REAIS ALEATÓRIAS
 
 ### Custo computacional
 * No algoritmo para a decomposição SVD de uma matriz A, o custo computacional está em:
@@ -167,9 +164,6 @@ normalized_image = image[:, :, :]
 
 normalized_image = (normalized_image - normalized_image.min()) / (normalized_image.max() - normalized_image.min())
 
-# AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
-# Explicar a necessidade da normalizacao: https://en.wikipedia.org/wiki/Normalization_(image_processing)
-
 img = plt.imshow(normalized_image)
 plt.axis('off')
 plt.show()
@@ -187,7 +181,7 @@ S1 = np.diag(S1)
 S2 = np.diag(S2)
 
 for precision in range(5, 200, 20):
-    # Construct approximate image, one time for each color (RGB)
+    # Construir aproximação da imagem, uma aproximação para cada cor
     red_approximation = U0[:, :precision] @ S0[0:precision, :precision] @ VT0[:precision, :]
     green_approximation = U1[:, :precision] @ S1[0:precision, :precision] @ VT1[:precision, :]
     blue_approximation = U2[:, :precision] @ S2[0:precision, :precision] @ VT2[:precision, :]
@@ -211,12 +205,8 @@ plt.tight_layout()
 plt.show()
 
 S = S2
-# AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
-# Explicar o S2
-
-print(np.diag(S)[0] / np.diag(S)[len(S) - 1])
-# AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
-# Comentar esse quociente
+# A matriz S2 é utilizada como medição aos gráficos de forma arbitrária. A diferença de valores entre S0, S1 e S2 depende da imagem (quantidade de vermelho, verde e azul), 
+# entretanto, dado que as cores se combinam, há uma tendência de que os valores das três matrizes se equilibrem.
 
 plt.figure(1)
 plt.semilogy(np.diag(S))
@@ -233,18 +223,45 @@ plt.xlabel("singular value's position")
 plt.show()
 ```
 
-##### Processo de compressão da imagem, variando a precisão baseada nos vetores singulares (explicar melhor)  
+* Necessidade de normalização dos dados da imagem:   
+    O algoritmo SVD é muito sensível à grandes diferenças de valores entre os dados, de tal forma que é utilizado no algoritmo PCA 
+    como fornecedor de uma matriz de covariâncias. Portanto, é necessário normalizar os dados a fim de que seja definido 
+    um intervalo específico, com limites superior e inferior, para que, assim, não haja preponderância de alguns 
+    significados sobre outros (ou seja, um número grande que significa "branco" sobre um número pequeno que significa "preto"). 
 
-!["Precision = 5 eigenimages"](images/compressions_images/precision-5.png)
-!["Precision = 25 eigenimages"](images/compressions_images/precision-25.png)
-!["Precision = 45 eigenimages"](images/compressions_images/precision-45.png)
-!["Precision = 65 eigenimages"](images/compressions_images/precision-65.png)
-!["Precision = 85 eigenimages"](images/compressions_images/precision-85.png)
-!["Precision = 105 eigenimages"](images/compressions_images/precision-105.png)
-!["Precision = 125 eigenimages"](images/compressions_images/precision-125.png)
-!["Precision = 145 eigenimages"](images/compressions_images/precision-145.png)
-!["Precision = 165 eigenimages"](images/compressions_images/precision-165.png)
-!["Precision = 185 eigenimages"](images/compressions_images/precision-185.png)
-!["Original image"](images/compressions_images/full-precision.png)
-!["Singular values' magnitudes by singular value"](images/compressions_images/sv_magnitudes.png)
-!["Singular values' cumulative sum"](images/compressions_images/sv-cumulative-sum.png)
+> A diferença entre os primeiro e último valores singulares, isto é, o "mais importante" e o "menos importante", 
+>denota a falta de relevância de parte dos dados originais à imagem:  
+    >>__print(np.diag(S2)[0] / np.diag(S2)[len(S) - 1])__  
+        51548.930
+
+##### Processo de compressão da imagem, variando a precisão  
+* Uma "eigenimage" é uma coluna da matriz U, esse nome é devido ao fato de carregar informações sobre toda a imagem e ser originada no cálculo de um autovetor da matriz M\*MT.  
+* Significado de "precision" nesse contexto: quantidade de valores singulares utilizados e, mutuamente, quantidade de colunas da matriz U.
+Em uma linguagem mais prática, também significa a quantidade de informação da matriz original da imagem.  
+
+!["Precision = 5 eigenimages"](images/compressed_images/precision-5.png)  
+!["Precision = 25 eigenimages"](images/compressed_images/precision-25.png)  
+!["Precision = 45 eigenimages"](images/compressed_images/precision-45.png)  
+!["Precision = 65 eigenimages"](images/compressed_images/precision-65.png)  
+!["Precision = 85 eigenimages"](images/compressed_images/precision-85.png)  
+!["Precision = 105 eigenimages"](images/compressed_images/precision-105.png)  
+!["Precision = 125 eigenimages"](images/compressed_images/precision-125.png)  
+!["Precision = 145 eigenimages"](images/compressed_images/precision-145.png)  
+!["Precision = 165 eigenimages"](images/compressed_images/precision-165.png)  
+!["Precision = 185 eigenimages"](images/compressed_images/precision-185.png)  
+* Imagem original, ou seja, sem compressão alguma:  
+    !["Original image"](images/compressed_images/full-precision.png)  
+* Gráfico, em escala logarítmica, exibindo a distribuição de magnitudes dos valores singulares:  
+    !["Singular values' magnitudes by singular value"](images/compressed_images/sv_magnitudes.png)  
+    * O gráfico acima, juntamente com as imagens do processo de compressão, exibe a imensa quantia de informação contida em pouquíssimas colunas de U. 
+    Ou seja, a imagem é abundante em dados supérfluos.  
+* Gráfico, onde o eixo y representa a porcentagem da informação descrita em função da quantidade de valores singulares utilizados:  
+    !["Singular values' cumulative sum"](images/compressed_images/sv-cumulative-sum.png)  
+    * Nota-se que com 200 valores singulares, ou seja, 200 colunas de U, é possível descrever 87% da informação original e, 
+    observando as imagens comprimidas, essa porção de informação é o suficiente para manter uma altíssima fidelidade ao material 
+    original enquanto é utilizado quase 1/10 da memória inicial.   
+
+* A decomposição SVD serve, em outra interpretação, para retirar ruído e redundância de uma base de dados. Em outras palavras, as colunas de U (M = U * Σ * VT) associadas a 
+valores singulares muito pequenos contidos em Σ (e, portanto, poucos significantes à descrição dos dados em questão) são excluídas ao serem tratadas 
+pelo algoritmo. Isto posto, a decomposição reduz uma matriz M à três matrizes menores e "mais limpas", mas que conseguem 
+descrever as mesmas informações do pré-processamento.
